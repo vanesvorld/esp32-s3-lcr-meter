@@ -187,16 +187,11 @@ void lcrProcess(const int* vinRaw, const int* voutRaw, int n,
     // -- 7. Clasificare si Calibrare pe tip de componenta --
     float absPhase = fabsf(result.phaseDeg);
 
-    // --- GUARD: Detectie "Fara Componenta" sau "Aparat Oprit" ---
-    if (absPhase > 110.0f || result.magnitude > 14000.0f) {
-        result.type = LCR_UNKNOWN;
-        strcpy(result.typeStr, "?");
-        result.value = 0.0f;
-        result.valid = false;
-        return; 
-    }
+    // NOTE: the "no component / open circuit" guard (absPhase > 110 || |Z| > 14 kΩ)
+    // was removed so high-impedance DUTs are reported instead of rejected. The
+    // magVin < 40 drive-detect guard above (unpowered op-amp) is still in place.
 
-    const float CALIB_FACTOR_R = 1.09f; 
+    const float CALIB_FACTOR_R = 1.09f;
     const float CALIB_FACTOR_C = 1.00f; 
     const float CALIB_FACTOR_L = 1.00f; 
 

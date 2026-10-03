@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="880" height="420" fill="#ffffff"/>
+  <g stroke="#111111" stroke-width="2" fill="none" stroke-linecap="round">
+
+    <!-- ===== Input: GPIO4 -> R_filt -> node A ===== -->
+    <line x1="58" y1="170" x2="90" y2="170"/>
+    <rect x="90" y="160" width="60" height="20" fill="#ffffff"/>
+    <line x1="150" y1="170" x2="200" y2="170"/>
+    <circle cx="200" cy="170" r="3.5" fill="#111111"/>
+
+    <!-- C_filt from node A to GND -->
+    <line x1="200" y1="170" x2="200" y2="214"/>
+    <line x1="186" y1="214" x2="214" y2="214"/>
+    <line x1="186" y1="222" x2="214" y2="222"/>
+    <line x1="200" y1="222" x2="200" y2="256"/>
+    <line x1="186" y1="256" x2="214" y2="256"/>
+    <line x1="190" y1="261" x2="210" y2="261"/>
+    <line x1="194" y1="266" x2="206" y2="266"/>
+
+    <!-- node A -> op-amp A + input (pin 3) -->
+    <line x1="200" y1="170" x2="222" y2="170"/>
+    <line x1="222" y1="170" x2="222" y2="155"/>
+    <line x1="222" y1="155" x2="238" y2="155"/>
+
+    <!-- Op-amp A triangle -->
+    <polygon points="238,138 238,202 320,170" fill="#ffffff"/>
+    <line x1="238" y1="185" x2="238" y2="185"/>
+
+    <!-- op-amp A output (pin 1) -> node Vin -->
+    <line x1="320" y1="170" x2="372" y2="170"/>
+    <circle cx="372" cy="170" r="3.5" fill="#111111"/>
+
+    <!-- feedback A: output -> pin 2 -->
+    <line x1="344" y1="170" x2="344" y2="210"/>
+    <line x1="344" y1="210" x2="214" y2="210"/>
+    <line x1="214" y1="210" x2="214" y2="185"/>
+    <line x1="214" y1="185" x2="238" y2="185"/>
+
+    <!-- Vin -> GPIO5 -->
+    <line x1="372" y1="170" x2="372" y2="112"/>
+
+    <!-- Vin -> R_ref -> node Vout -->
+    <line x1="372" y1="170" x2="408" y2="170"/>
+    <rect x="408" y="160" width="60" height="20" fill="#ffffff"/>
+    <line x1="468" y1="170" x2="520" y2="170"/>
+    <circle cx="520" cy="170" r="3.5" fill="#111111"/>
+
+    <!-- DUT from Vout to GND -->
+    <line x1="520" y1="170" x2="520" y2="210"/>
+    <rect x="505" y="210" width="30" height="36" fill="#ffffff"/>
+    <line x1="520" y1="246" x2="520" y2="262"/>
+    <line x1="506" y1="262" x2="534" y2="262"/>
+    <line x1="510" y1="267" x2="530" y2="267"/>
+    <line x1="514" y1="272" x2="526" y2="272"/>
+
+    <!-- Vout -> op-amp B + input (pin 5) -->
+    <line x1="520" y1="170" x2="556" y2="170"/>
+    <line x1="556" y1="170" x2="556" y2="155"/>
+    <line x1="556" y1="155" x2="580" y2="155"/>
+
+    <!-- Op-amp B triangle -->
+    <polygon points="580,138 580,202 662,170" fill="#ffffff"/>
+
+    <!-- op-amp B output (pin 7) -> GPIO6 -->
+    <line x1="662" y1="170" x2="726" y2="170"/>
+
+    <!-- feedback B: output -> pin 6 -->
+    <line x1="692" y1="170" x2="692" y2="210"/>
+    <line x1="692" y1="210" x2="562" y2="210"/>
+    <line x1="562" y1="210" x2="562" y2="185"/>
+    <line x1="562" y1="185" x2="580" y2="185"/>
+
+    <!-- ===== Power inset ===== -->
+    <line x1="150" y1="345" x2="250" y2="345"/>
+    <circle cx="250" cy="345" r="3.5" fill="#111111"/>
+    <line x1="190" y1="345" x2="190" y2="360"/>
+    <line x1="176" y1="360" x2="204" y2="360"/>
+    <line x1="176" y1="368" x2="204" y2="368"/>
+    <line x1="190" y1="368" x2="190" y2="383"/>
+    <line x1="150" y1="383" x2="250" y2="383"/>
+    <circle cx="250" cy="383" r="3.5" fill="#111111"/>
+  </g>
+
+  <!-- ===== op-amp +/- markers ===== -->
+  <g stroke="#111111" stroke-width="1.6" stroke-linecap="round">
+    <line x1="246" y1="155" x2="254" y2="155"/>
+    <line x1="250" y1="151" x2="250" y2="159"/>
+    <line x1="246" y1="185" x2="254" y2="185"/>
+    <line x1="588" y1="155" x2="596" y2="155"/>
+    <line x1="592" y1="151" x2="592" y2="159"/>
+    <line x1="588" y1="185" x2="596" y2="185"/>
+  </g>
+
+  <!-- ===== Labels ===== -->
+  <g fill="#111111" font-size="14">
+    <text x="8" y="174">GPIO4</text>
+    <text x="110" y="153" text-anchor="middle" font-size="11">1 kΩ</text>
+    <text x="182" y="242" text-anchor="end" font-size="12">147 nF</text>
+    <text x="372" y="104" text-anchor="middle">GPIO5</text>
+    <text x="438" y="153" text-anchor="middle" font-size="11">1 kΩ</text>
+    <text x="520" y="232" text-anchor="middle" font-size="12">DUT</text>
+    <text x="734" y="174">GPIO6</text>
+  </g>
+
+  <!-- pin numbers -->
+  <g fill="#111111" font-size="13" font-weight="bold">
+    <text x="232" y="152" text-anchor="end">3</text>
+    <text x="232" y="190" text-anchor="end">2</text>
+    <text x="326" y="164">1</text>
+    <text x="574" y="152" text-anchor="end">5</text>
+    <text x="574" y="190" text-anchor="end">6</text>
+    <text x="668" y="164">7</text>
+  </g>
+
+  <!-- op-amp names -->
+  <g fill="#666666" font-size="11">
+    <text x="262" y="174">A</text>
+    <text x="604" y="174">B</text>
+  </g>
+
+  <!-- power inset labels -->
+  <g fill="#111111" font-size="13">
+    <text x="144" y="349" text-anchor="end">+5V</text>
+    <text x="144" y="387" text-anchor="end">GND</text>
+    <text x="210" y="367">100 nF</text>
+    <text x="258" y="349" font-weight="bold">8 (V+)</text>
+    <text x="258" y="387" font-weight="bold">4 (GND)</text>
+    <text x="150" y="325" font-size="12" fill="#666666">LM358 power</text>
+  </g>
+
+  <!-- title -->
+  <text x="10" y="24" fill="#111111" font-size="15" font-weight="bold">LCR front-end — pin connections</text>
+</svg>

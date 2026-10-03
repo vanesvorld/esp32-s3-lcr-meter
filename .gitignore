@@ -7,3 +7,7 @@
 .clinerules
 .clinerules/architecture.md
 .clinerules/coding.md
+
+# Generated / machine-specific
+compile_commands.json
+.cache/
