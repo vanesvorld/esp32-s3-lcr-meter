@@ -1,7 +1,12 @@
 #include <Arduino.h>
 #include "SineGenerator.h"
 
-#define SAMPLES 100
+// Esantioane pe perioada de sinus. Vezi nota despre timer mai jos: pe ESP32
+// clasic (T-Display) ledcWrite() in ISR costa ~13 µs, deci ISR-ul nu poate
+// rula la 10 µs (100 kHz). Folosim 50 de esantioane la 20 µs => 50*20 = 1000 µs
+// = 1 kHz exact, cu marja confortabila peste costul ledcWrite.
+#define SAMPLES         50
+#define SINE_STEP_US    20      // perioada alarmei timerului (50 kHz ISR)
 
 
 int sinTable[SAMPLES];
@@ -60,17 +65,21 @@ bool generateSineWave(uint8_t pin, uint32_t freq, uint8_t resolution, uint8_t ch
   //-----------------------------------
   // -------TIMER INITIALIZATION-------
   //-----------------------------------
-  // semnal 1khz (1000 perioade pe secunda)
-  // => esantionam in 100 de puncte
-  // => un esantion la fiecare 1/(1000*100) secunde (10 microsecunde/esantion)
-  // aici setam alarma timerului
+  // semnal 1 kHz (1000 perioade pe secunda)
+  // => esantionam in SAMPLES (50) puncte
+  // => un esantion la fiecare SINE_STEP_US (20 µs) => 50*20µs = 1000µs = 1 kHz
+  //
+  // NOTA (ESP32 clasic vs S3): la 10 µs/esantion (100 pct) ISR-ul NU se incadra
+  // pe ESP32 clasic — ledcWrite() costa ~13 µs, deci ISR-ul rula liber la ~13.2
+  // µs si sinusul iesea la ~759 Hz (cadea in bin-ul gresit al DFT). La 20 µs HW
+  // timer-ul dicteaza ritmul (ISR-ul se incadra lejer) si sinusul e exact 1 kHz.
   //-----------------------------------
 
 
-  // ceasul default este de 80 Mhz -- divider 80 ca sa ramana 1Mhz (1 microsecunda)
+  // ceasul default este de 80 MHz -- divider 80 ca sa ramana 1 MHz (1 µs/tick)
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &onTimer, true);
-  timerAlarmWrite(timer, 10, true);
+  timerAlarmWrite(timer, SINE_STEP_US, true);
   timerAlarmEnable(timer);
   
   return true;
