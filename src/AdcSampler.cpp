@@ -12,14 +12,6 @@ static volatile bool expectVin    = true;
 
 static TaskHandle_t adcTaskHandle = NULL;
 
-// DEBUG: rata reala de esantionare per-canal, masurata INTRE primul si ultimul
-// esantion al unui cadru (exclude pauza dintre cadre), deci reflecta viteza
-// reala a buclei de esantionare, nu cat de repede o goleste loop().
-static volatile uint64_t frameStartUs   = 0;
-static volatile float    measuredRateHz = 0.0f;
-
-float adcGetMeasuredRateHz() { return measuredRateHz; }
-
 // Task-ul care înlocuiește ISR-ul. Rulează independent.
 void adcTask(void* pvParameters) {
     uint64_t next_read = esp_timer_get_time();
@@ -35,8 +27,6 @@ void adcTask(void* pvParameters) {
         uint64_t now = esp_timer_get_time();
         if (now >= next_read) {
             if (expectVin) {
-                // DEBUG: marcam startul cadrului la primul esantion Vin.
-                if (writeIdx == 0) frameStartUs = now;
                 vinBuf[activeBuf][writeIdx] = adc1_get_raw(ADC1_CHANNEL_4);
                 expectVin = false;
             } else {
@@ -46,11 +36,6 @@ void adcTask(void* pvParameters) {
                 writeIdx++;
                 // Când s-a umplut un cadru complet de date (Vin + Vout)
                 if (writeIdx >= ADC_BUF_SIZE) {
-                    // DEBUG: rata reala = ADC_BUF_SIZE esantioane / durata cadrului.
-                    uint64_t dt = now - frameStartUs;
-                    if (frameStartUs != 0 && dt > 0) {
-                        measuredRateHz = (float)ADC_BUF_SIZE * 1e6f / (float)dt;
-                    }
                     bufReady[activeBuf] = true;
                     activeBuf = 1 - activeBuf;
                     writeIdx  = 0;

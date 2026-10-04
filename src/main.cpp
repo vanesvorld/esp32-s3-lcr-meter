@@ -158,48 +158,6 @@ void loop() {
   adcGetBuffer(readyBuf, vinLocal, voutLocal);
   adcReleaseBuffer(readyBuf);
 
-  // --- DEBUG TEMPORAR: timing cadru + spectru + rata reala de esantionare ---
-  // Confirma pe S3 ca (a) nu mai e boot-loop si (b) stimulul e la bin 120 (1 kHz).
-  // Scoate acest bloc dupa diagnoza.
-  static uint32_t lastDbg   = 0;
-  static uint32_t lastFrame = 0;
-  static float    frameMsEwma = 0.0f;
-  uint32_t nowMs = millis();
-  if (lastFrame != 0) {
-    float dt = (float)(nowMs - lastFrame);
-    frameMsEwma = (frameMsEwma == 0.0f) ? dt : (frameMsEwma * 0.9f + dt * 0.1f);
-  }
-  lastFrame = nowMs;
-
-  if (nowMs - lastDbg > 500) {
-    lastDbg = nowMs;
-
-    long vinSum = 0;
-    for (int i = 0; i < ADC_BUF_SIZE; i++) vinSum += vinLocal[i];
-    float vinMean = (float)vinSum / ADC_BUF_SIZE;
-
-    const int N = ADC_BUF_SIZE;
-    float peakMag = 0.0f; int peakBin = 0; float magAt120 = 0.0f;
-    for (int kk = 1; kk <= 300; kk++) {
-      float coeff = 2.0f * cosf(2.0f * PI * kk / N);
-      float s1 = 0, s2 = 0;
-      for (int i = 0; i < N; i++) {
-        float s0 = (vinLocal[i] - vinMean) + coeff * s1 - s2;
-        s2 = s1; s1 = s0;
-      }
-      float re = s1 - s2 * cosf(2.0f * PI * kk / N);
-      float im = s2 * sinf(2.0f * PI * kk / N);
-      float mag = sqrtf(re * re + im * im) * 2.0f / N;
-      if (mag > peakMag) { peakMag = mag; peakBin = kk; }
-      if (kk == 120) magAt120 = mag;
-    }
-    float realFs = adcGetMeasuredRateHz();
-    float peakFreqAssumed = peakBin * SAMPLE_RATE / N;
-    float peakFreqReal    = peakBin * realFs / N;
-    Serial.printf("DBG frame=%.1fms realFs=%.0fHz | Vin peakBin=%d peakMag=%.0f magAt120=%.0f | stimulus=%.0fHz(@10k) / %.0fHz(@realFs)\n",
-                  frameMsEwma, realFs, peakBin, peakMag, magAt120, peakFreqAssumed, peakFreqReal);
-  }
-
   // Proceseaza datele brute prin LcrMath
   lcrProcess(vinLocal, voutLocal, ADC_BUF_SIZE, lcrResult);
 
