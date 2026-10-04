@@ -18,6 +18,10 @@
 
 void adcSamplerInit();
 
+// DEBUG: measured per-channel sample rate (Hz), timed inside the sampler task
+// across one frame fill (excludes the inter-frame pause). 0 until first frame.
+float adcGetMeasuredRateHz();
+
 // returns index of ready buffer (0 or 1), -1 if neither are ready
 int  adcGetReadyBufIndex();
 
